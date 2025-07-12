@@ -1,3 +1,8 @@
+/*
+ * Custom changes:
+ * getPatchesReleaseVersion() from BuildConfig
+ * getResourceIdentifier(Context, String, String) searches with package:ReVancedXposed as fallback
+ * */
 package app.revanced.extension.shared;
 
 import android.annotation.SuppressLint;
@@ -68,6 +73,7 @@ import app.revanced.extension.shared.settings.AppLanguage;
 import app.revanced.extension.shared.settings.BaseSettings;
 import app.revanced.extension.shared.settings.BooleanSetting;
 import app.revanced.extension.shared.settings.preference.ReVancedAboutPreference;
+import io.github.chsbuffer.revancedxposed.BuildConfig;
 
 public class Utils {
 
@@ -95,7 +101,7 @@ public class Utils {
      */
     @SuppressWarnings("SameReturnValue")
     public static String getPatchesReleaseVersion() {
-        return ""; // Value is replaced during patching.
+        return BuildConfig.PATCH_VERSION;
     }
 
     private static PackageInfo getPackageInfo() throws PackageManager.NameNotFoundException {
@@ -279,7 +285,10 @@ public class Utils {
      */
     @SuppressLint("DiscouragedApi")
     public static int getResourceIdentifier(Context context, String resourceIdentifierName, String type) {
-        return context.getResources().getIdentifier(resourceIdentifierName, type, context.getPackageName());
+        // custom change
+        var result = context.getResources().getIdentifier(resourceIdentifierName, type, context.getPackageName());
+        if (result != 0) return result;
+        return context.getResources().getIdentifier(resourceIdentifierName, type, BuildConfig.APPLICATION_ID);
     }
 
     /**

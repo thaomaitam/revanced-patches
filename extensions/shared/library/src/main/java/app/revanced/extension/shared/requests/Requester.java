@@ -1,6 +1,11 @@
+/*
+ * Custom changes: custom http agent
+ * */
 package app.revanced.extension.shared.requests;
 
 import app.revanced.extension.shared.Utils;
+import io.github.chsbuffer.revancedxposed.BuildConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +33,8 @@ public class Requester {
         connection.setFixedLengthStreamingMode(0);
         connection.setRequestMethod(route.getMethod().name());
         String agentString = System.getProperty("http.agent")
-                + "; ReVanced/" + Utils.getAppVersionName()
-                + " (" + Utils.getPatchesReleaseVersion() + ")";
+                + "; ReVancedXposed/" + Utils.getAppVersionName()
+                + " (" + BuildConfig.VERSION_NAME + ")";
         connection.setRequestProperty("User-Agent", agentString);
 
         return connection;

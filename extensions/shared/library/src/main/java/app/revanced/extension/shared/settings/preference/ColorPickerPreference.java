@@ -1,3 +1,6 @@
+/**
+ * Custom changes: lazy load setting
+ */
 package app.revanced.extension.shared.settings.preference;
 
 import static app.revanced.extension.shared.StringRef.str;
@@ -158,11 +161,7 @@ public class ColorPickerPreference extends EditTextPreference {
      * Initializes the preference by setting up the EditText, loading the color, and set the widget layout.
      */
     private void init() {
-        colorSetting = (StringSetting) Setting.getSettingFromPath(getKey());
-        if (colorSetting == null) {
-            Logger.printException(() -> "Could not find color setting for: " + getKey());
-        }
-
+        // custom change
         EditText editText = getEditText();
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
                 | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -174,6 +173,18 @@ public class ColorPickerPreference extends EditTextPreference {
         setWidgetLayoutResource(getResourceIdentifier("revanced_color_dot_widget", "layout"));
     }
 
+    // custom change
+    private StringSetting getColorSettings() {
+        if (colorSetting != null)
+            return colorSetting;
+
+        colorSetting = (StringSetting) Setting.getSettingFromPath(getKey());
+        if (colorSetting == null) {
+            Logger.printException(() -> "Could not find color setting for: " + getKey());
+        }
+        return colorSetting;
+    }
+
     /**
      * Sets the selected color and updates the UI and settings.
      *
@@ -182,6 +193,8 @@ public class ColorPickerPreference extends EditTextPreference {
      */
     @Override
     public final void setText(String colorString) {
+        // custom change
+        getColorSettings();
         try {
             Logger.printDebug(() -> "setText: " + colorString);
             super.setText(colorString);
@@ -295,7 +308,7 @@ public class ColorPickerPreference extends EditTextPreference {
         // Horizontal layout for preview and EditText.
         LinearLayout inputLayout = new LinearLayout(context);
         inputLayout.setOrientation(LinearLayout.HORIZONTAL);
-
+        
         dialogColorPreview = new TextView(context);
         LinearLayout.LayoutParams previewParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,

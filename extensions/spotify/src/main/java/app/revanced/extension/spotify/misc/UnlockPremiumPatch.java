@@ -1,6 +1,9 @@
+/*
+ * Custom changes:
+ * Wipe stubbed types: REMOVED_HOME_SECTIONS, overrideAttributes, removeHomeSections
+ * */
 package app.revanced.extension.spotify.misc;
 
-import app.revanced.ContextMenuItemPlaceholder;
 import app.revanced.extension.shared.Logger;
 import app.revanced.extension.spotify.shared.ComponentFilters.ComponentFilter;
 import app.revanced.extension.spotify.shared.ComponentFilters.ResourceIdComponentFilter;
@@ -10,6 +13,12 @@ import java.util.*;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import de.robv.android.xposed.XposedHelpers;
 
 @SuppressWarnings("unused")
 public final class UnlockPremiumPatch {
@@ -31,6 +40,7 @@ public final class UnlockPremiumPatch {
         }
 
         IS_SPOTIFY_LEGACY_APP_TARGET = isLegacy;
+        Logger.printDebug(() -> "isLegacy: " + IS_SPOTIFY_LEGACY_APP_TARGET);
     }
 
     private static class OverrideAttribute {
@@ -143,11 +153,7 @@ public final class UnlockPremiumPatch {
 
                 Object overrideValue = override.overrideValue;
                 Object originalValue;
-                if (IS_SPOTIFY_LEGACY_APP_TARGET) {
-                    originalValue = ((com.spotify.useraccount.v1.AccountAttribute) attribute).value_;
-                } else {
-                    originalValue = ((com.spotify.remoteconfig.internal.AccountAttribute) attribute).value_;
-                }
+                originalValue = XposedHelpers.getObjectField(attribute, "value_");
 
                 if (overrideValue.equals(originalValue)) {
                     continue;
@@ -156,11 +162,7 @@ public final class UnlockPremiumPatch {
                 Logger.printInfo(() -> "Overriding account attribute " + override.key +
                         " from " + originalValue + " to " + overrideValue);
 
-                if (IS_SPOTIFY_LEGACY_APP_TARGET) {
-                    ((com.spotify.useraccount.v1.AccountAttribute) attribute).value_ = overrideValue;
-                } else {
-                    ((com.spotify.remoteconfig.internal.AccountAttribute) attribute).value_ = overrideValue;
-                }
+                XposedHelpers.setObjectField(attribute, "value_", overrideValue);
             }
         } catch (Exception ex) {
             Logger.printException(() -> "overrideAttributes failure", ex);
@@ -209,11 +211,11 @@ public final class UnlockPremiumPatch {
      * Injection point. Remove ads sections from home.
      * Depends on patching abstract protobuf list ensureIsMutable method.
      */
-    public static void removeHomeSections(List<com.spotify.home.evopage.homeapi.proto.Section> sections) {
+    public static void removeHomeSections(List<?> sections) {
         Logger.printInfo(() -> "Removing ads section from home");
         removeSections(
                 sections,
-                section -> section.featureTypeCase_,
+                section -> XposedHelpers.getIntField(section, "featureTypeCase_"),
                 REMOVED_HOME_SECTIONS
         );
     }
@@ -222,11 +224,11 @@ public final class UnlockPremiumPatch {
      * Injection point. Remove ads sections from browse.
      * Depends on patching abstract protobuf list ensureIsMutable method.
      */
-    public static void removeBrowseSections(List<com.spotify.browsita.v1.resolved.Section> sections) {
+    public static void removeBrowseSections(List<?> sections) {
         Logger.printInfo(() -> "Removing ads section from browse");
         removeSections(
                 sections,
-                section -> section.sectionTypeCase_,
+                section -> XposedHelpers.getIntField(section, "sectionTypeCase_"),
                 REMOVED_BROWSE_SECTIONS
         );
     }
@@ -292,7 +294,7 @@ public final class UnlockPremiumPatch {
             ArrayList<Object> filteredContextMenuItems = new ArrayList<>(originalContextMenuItems.size());
 
             for (Object contextMenuItem : originalContextMenuItems) {
-                if (isFilteredContextMenuItem(((ContextMenuItemPlaceholder) contextMenuItem).getViewModel())) {
+                if (isFilteredContextMenuItem((XposedHelpers.callMethod(contextMenuItem, "getViewModel")))) {
                     continue;
                 }
 

@@ -1,3 +1,6 @@
+/**
+ * custom changes: comment out NewSegmentLayout
+ */
 package app.revanced.extension.youtube.sponsorblock.ui;
 
 import static app.revanced.extension.shared.Utils.getResourceIdentifier;
@@ -89,10 +92,10 @@ public class SponsorBlockViewController {
             skipSponsorButtonRef = new WeakReference<>(Objects.requireNonNull(
                     layout.findViewById(getResourceIdentifier("revanced_sb_skip_sponsor_button", "id"))));
 
-            NewSegmentLayout newSegmentLayout = Objects.requireNonNull(
-                    layout.findViewById(getResourceIdentifier("revanced_sb_new_segment_view", "id")));
-            newSegmentLayoutRef = new WeakReference<>(newSegmentLayout);
-            newSegmentLayout.updateLayout();
+//            NewSegmentLayout newSegmentLayout = Objects.requireNonNull(
+//                    layout.findViewById(getResourceIdentifier("revanced_sb_new_segment_view", "id")));
+//            newSegmentLayoutRef = new WeakReference<>(newSegmentLayout);
+//            newSegmentLayout.updateLayout();
 
             newSegmentLayoutVisible = false;
             skipHighlight = null;

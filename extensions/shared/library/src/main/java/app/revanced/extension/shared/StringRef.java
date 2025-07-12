@@ -1,3 +1,6 @@
+/**
+ * custom changes: publicize fields
+ */
 package app.revanced.extension.shared;
 
 import android.content.Context;
@@ -10,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StringRef {
-    private static Resources resources;
-    private static String packageName;
+    public static Resources resources;
+    public static String packageName;
 
     // must use a thread safe map, as this class is used both on and off the main thread
     private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap<>());

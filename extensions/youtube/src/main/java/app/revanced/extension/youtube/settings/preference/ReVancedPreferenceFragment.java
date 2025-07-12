@@ -1,9 +1,15 @@
+/*
+ * Custom changes:
+ * ReVancedPreferenceFragment.initialize() custom implement instead of calling super method.
+ * */
 package app.revanced.extension.youtube.settings.preference;
 
 import static app.revanced.extension.shared.StringRef.str;
 import static app.revanced.extension.shared.Utils.getResourceIdentifier;
+import static io.github.chsbuffer.revancedxposed.youtube.misc.SettingsKt.getPreferences;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Insets;
 import android.graphics.drawable.Drawable;
@@ -12,6 +18,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.text.SpannableStringBuilder;
@@ -39,10 +46,12 @@ import java.util.regex.Pattern;
 import app.revanced.extension.shared.Logger;
 import app.revanced.extension.shared.Utils;
 import app.revanced.extension.shared.settings.BaseSettings;
+import app.revanced.extension.shared.settings.Setting;
 import app.revanced.extension.shared.settings.preference.AbstractPreferenceFragment;
 import app.revanced.extension.shared.settings.preference.NoTitlePreferenceCategory;
 import app.revanced.extension.youtube.settings.LicenseActivityHook;
 import app.revanced.extension.youtube.sponsorblock.ui.SponsorBlockPreferenceGroup;
+import io.github.chsbuffer.revancedxposed.shared.misc.settings.preference.BasePreference;
 
 /**
  * Preference fragment for ReVanced settings.
@@ -99,7 +108,21 @@ public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
      */
     @Override
     protected void initialize() {
-        super.initialize();
+        //region rewrite
+        Activity context = getActivity();
+        PreferenceManager manager = getPreferenceManager();
+        manager.setSharedPreferencesName(Setting.preferences.name);
+        PreferenceScreen screen = manager.createPreferenceScreen(context);
+        setPreferenceScreen(screen);
+
+        var preferencesBuilder = getPreferences();
+        preferencesBuilder.forEach(builder -> screen.addPreference(builder.build(context, manager)));
+        preferencesBuilder.forEach(BasePreference::onAttachedToHierarchy);
+
+        screen.setKey("revanced_settings_root_screen_sort_by_key");
+        Utils.sortPreferenceGroups(screen);
+        Utils.setPreferenceTitlesToMultiLineIfNeeded(screen);
+        //endregion
 
         try {
             preferenceScreen = getPreferenceScreen();

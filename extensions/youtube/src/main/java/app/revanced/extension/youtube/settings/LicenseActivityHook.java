@@ -1,3 +1,6 @@
+/*
+ * Custom changes: no force cairo patch, so no version check, avoid errors
+ * */
 package app.revanced.extension.youtube.settings;
 
 import static app.revanced.extension.shared.Utils.getResourceIdentifier;
@@ -14,8 +17,6 @@ import app.revanced.extension.shared.Logger;
 import app.revanced.extension.shared.Utils;
 import app.revanced.extension.shared.settings.AppLanguage;
 import app.revanced.extension.shared.settings.BaseSettings;
-import app.revanced.extension.youtube.patches.VersionCheckPatch;
-import app.revanced.extension.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.extension.youtube.settings.preference.ReVancedPreferenceFragment;
 
 /**
@@ -53,18 +54,6 @@ public class LicenseActivityHook {
      * Injection point.
      */
     public static boolean useCairoSettingsFragment(boolean original) {
-        // Early targets have layout issues and it's better to always force off.
-        if (!VersionCheckPatch.IS_19_34_OR_GREATER) {
-            return false;
-        }
-        if (Settings.RESTORE_OLD_SETTINGS_MENUS.get()) {
-            return false;
-        }
-        // Spoofing can cause half broken settings menus of old and new settings.
-        if (SpoofAppVersionPatch.isSpoofingToLessThan("19.35.36")) {
-            return false;
-        }
-
         // On the first launch of a clean install, forcing the cairo menu can give a
         // half broken appearance because all the preference icons may not be available yet.
         // 19.34+ cairo settings are always on, so it doesn't need to be forced anyway.

@@ -1,3 +1,6 @@
+/*
+* Custom changes: pass controller.activity, instead of controller
+* */
 package app.revanced.extension.youtube.swipecontrols.controller.gesture
 
 import android.view.MotionEvent
@@ -17,7 +20,7 @@ import app.revanced.extension.youtube.swipecontrols.misc.toPoint
 class ClassicSwipeController(
     private val controller: SwipeControlsHostActivity,
 ) : BaseGestureController(controller),
-    PlayerControlsVisibilityObserver by PlayerControlsVisibilityObserverImpl(controller) {
+    PlayerControlsVisibilityObserver by PlayerControlsVisibilityObserverImpl(controller.activity) {
     /**
      * the last event captured in [onDown]
      */

@@ -1,3 +1,6 @@
+/**
+ * custom changes: pass controller.activity, instead of controller
+ */
 package app.revanced.extension.youtube.swipecontrols.controller.gesture.core
 
 import android.view.GestureDetector
@@ -18,7 +21,7 @@ abstract class BaseGestureController(
         controller.config.swipeMagnitudeThreshold.toDouble(),
     ),
     VolumeAndBrightnessScroller by VolumeAndBrightnessScrollerImpl(
-        controller,
+        controller.activity,
         controller.audio,
         controller.screen,
         controller.overlay,
@@ -31,7 +34,7 @@ abstract class BaseGestureController(
      * the main gesture detector that powers everything
      */
     @Suppress("LeakingThis")
-    protected val detector = GestureDetector(controller, this)
+    protected val detector = GestureDetector(controller.activity, this)
 
     /**
      * were downstream event cancelled already? used in [onScroll]

@@ -1,3 +1,6 @@
+/**
+ * custom changes: DEBUG defaults to BuildConfig.DEBUG
+ */
 package app.revanced.extension.shared.settings;
 
 import static java.lang.Boolean.FALSE;
@@ -8,6 +11,8 @@ import static app.revanced.extension.shared.spoof.SpoofVideoStreamsPatch.SpoofiO
 
 import app.revanced.extension.shared.spoof.ClientType;
 
+import io.github.chsbuffer.revancedxposed.BuildConfig;
+
 /**
  * Settings shared across multiple apps.
  * <p>
@@ -15,7 +20,7 @@ import app.revanced.extension.shared.spoof.ClientType;
  * or reference this class.
  */
 public class BaseSettings {
-    public static final BooleanSetting DEBUG = new BooleanSetting("revanced_debug", FALSE);
+    public static final BooleanSetting DEBUG = new BooleanSetting("revanced_debug", BuildConfig.DEBUG);
     public static final BooleanSetting DEBUG_STACKTRACE = new BooleanSetting("revanced_debug_stacktrace", FALSE, parent(DEBUG));
     public static final BooleanSetting DEBUG_TOAST_ON_ERROR = new BooleanSetting("revanced_debug_toast_on_error", TRUE, "revanced_debug_toast_on_error_user_dialog_message");
 

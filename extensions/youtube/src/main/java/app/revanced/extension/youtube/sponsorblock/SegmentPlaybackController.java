@@ -1,3 +1,6 @@
+/*
+ * Custom changes: setSponsorBarRect(Object) -> setSponsorBarRect(Rect)
+ * */
 package app.revanced.extension.youtube.sponsorblock;
 
 import static app.revanced.extension.shared.StringRef.str;
@@ -881,11 +884,11 @@ public class SegmentPlaybackController {
      * Injection point
      */
     @SuppressWarnings("unused")
-    public static void setSponsorBarRect(Object self) {
+    public static void setSponsorBarRect(final Rect rect) {
         try {
-            Field field = self.getClass().getDeclaredField("replaceMeWithsetSponsorBarRect");
-            field.setAccessible(true);
-            Rect rect = (Rect) Objects.requireNonNull(field.get(self));
+//            Field field = self.getClass().getDeclaredField("replaceMeWithsetSponsorBarRect");
+//            field.setAccessible(true);
+//            Rect rect = (Rect) Objects.requireNonNull(field.get(self));
             setSponsorBarAbsoluteLeft(rect);
             setSponsorBarAbsoluteRight(rect);
         } catch (Exception ex) {
