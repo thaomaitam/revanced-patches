@@ -8,7 +8,6 @@ import app.revanced.extension.shared.Logger;
 import app.revanced.extension.spotify.shared.ComponentFilters.ComponentFilter;
 import app.revanced.extension.spotify.shared.ComponentFilters.ResourceIdComponentFilter;
 import app.revanced.extension.spotify.shared.ComponentFilters.StringComponentFilter;
-import com.spotify.remoteconfig.internal.AccountAttribute;
 
 import java.util.*;
 
@@ -116,10 +115,10 @@ public final class UnlockPremiumPatch {
     /**
      * Injection point. Override account attributes.
      */
-    public static void overrideAttributes(Map<String, AccountAttribute> attributes) {
+    public static void overrideAttributes(Map<String, ?> attributes) {
         try {
             for (OverrideAttribute override : PREMIUM_OVERRIDES) {
-                AccountAttribute attribute = attributes.get(override.key);
+                var attribute = attributes.get(override.key);
 
                 if (attribute == null) {
                     if (override.isExpected) {
